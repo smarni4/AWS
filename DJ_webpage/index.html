@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html
+ 
+lang="en">
+
+<head>
+
+    
+<meta
+ 
+charset="UTF-8">
+
+    
+<meta
+ 
+name="viewport"
+ 
+content="width=device-width, initial-scale=1.0">
+
+    
+<title>DJ Bunny - Official Website</title>
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+
+    <header>
+        <img src="images/logo.png" alt="DJ Logo">
+        <h1>DJ BUNNY</h1>
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#music">Music</a></li>
+                <li><a href="#events">Events</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <img src="images/hero-image.jpg" alt="DJ in action">
+        <h2>Bringing the beats to your party</h2>
+        <button>Book Now</button>
+    </section>
+
+    <section id="about">
+        <h2>About</h2>
+        <p>Elevate your event with unforgettable music experiences. Our professional DJ services bring rhythm, energy, and excitement to any occasion, creating lasting memories on the dance floor. From weddings to corporate events, we curate the perfect playlist tailored to your unique style, ensuring a seamless fusion of music and celebration. Trust us to set the perfect mood and keep the party alive. Let the music speak, and let the dance floor ignite with our expert DJ services.</p>
+        <img src="images/dj-photo.jpg" alt="DJ Photo">
+    </section>
+
+    <section id="music">
+        <h2>Music</h2>
+        <h3>Check out my latest album on SoundCloud:</h3>
+        <iframe width="100%" height="450" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https://soundcloud.com/viswanath-pandrangi?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
+
+    </section>
+
+    <section id="events">
+        <h2>Upcoming Events</h2>
+        <ul>
+            <li>
+                <h3>BocaRaton TollyBolly DJ Night </h3>
+                <p>Jan 7th 2024, 10:00 P.M. - 1:00 A.M.., Desi Gardens</p>
+            </li>
+            </ul>
+    </section>
+
+    <section id="contact">
+        <h2>Contact</h2>
+        <form id="contact-form" action="/send-email.php" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name">
+            <label for="email">Email:</label>
+	    <input type="email" id="email">
+	    <label for="message">Message:</label>
+            <textarea id="message"></textarea>
+	    <button type="submit">Send</button>
+	</form>
+
+    </section>
+
+    <script>
+    document.getElementById("contact-form").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+       
+ 
+const message = document.getElementById("message").value;
+
+        // Construct email content
+
+        
+const subject = "New Contact from DJ BUNNY Website";
+        const body = `Name: ${name}\nEmail: ${email}\nMessage:\n${message}`;
+
+        // Use a server-side script to send the email securely
+        fetch("/send-email.php", {
+            method: "POST",
+            body: new URLSearchParams({
+                subject: subject,
+                body: body
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Display a success message to the user
+                alert("Your message has been sent!");
+                // Clear form fields
+                document.getElementById("contact-form").reset();
+            } else {
+                // Handle errors
+                console.error("Error sending email:", response.statusText);
+                alert("An error occurred while sending your message. Please try again later.");
+            }
+        })
+        .catch(error => {
+            console.error("Error sending email:", error);
+            alert("An unexpected error occurred. Please try again later.");
+        });
+    });
+    </script>
+
+    <footer>        
+	<p>&copy; 2024 DJ BUNNY. All rights reserved.</p>
+	<a href="https://www.instagram.com/djbunny_svp/"><img src="images/instagram.png" alt="Instagram"></a>
+    </footer>
+
+</body>
+</html>
