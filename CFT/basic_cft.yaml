@@ -1,0 +1,4 @@
+AWSTemplateVersion: "2019-09-09"
+
+Description: "Basic Template 1"
+
