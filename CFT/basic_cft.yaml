@@ -1,4 +1,97 @@
-AWSTemplateVersion: "2019-09-09"
+AWSTemplateFormatVersion: "2010-09-09"
 
 Description: "Basic Template 1"
 
+Resources:
+
+#  TestingInstance:
+#    Type: 'AWS::EC2::Instance'
+#    Properties:
+#      InstanceType: t3.micro
+#      ImageId: 'ami-0005e0cfe09cc9050'
+
+  WebsiteS3Hosting:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: AwsExecRead
+      BucketName: dj-bunny-website
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      VersioningConfiguration:
+        Status: "Enabled"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+
+  WebsiteS3HostingPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket:
+        Ref: 'WebsiteS3Hosting'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: '*'
+            Action:
+              - 's3:GetObject'
+              - 's3:PutObject'
+            Resource:
+              Fn::Join:
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref: WebsiteS3Hosting
+                  - '/*'
+
+  LambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Role: arn:aws:iam::556820177124:role/lambdarrole
+      Code:
+       S3Bucket: !Ref WebsiteS3Hosting
+       S3Key: lambda_code.zip
+#      Events:
+#        SubmitForm:
+#          Type: Api
+#          Properties:
+#            RestApiId: !Ref ApiGateway
+#            Path: /submit
+#            Method: post
+
+  ApiGateway:
+    Type: 'AWS::ApiGatewayV2::Api'
+    Properties:
+      Name: CustomerDetails
+      ProtocolType: HTTP
+      CorsConfiguration:
+        AllowHeaders:
+          - '*'
+        AllowMethods:
+          - GET
+          - POST
+
+Outputs:
+  WebsiteURL:
+    Value: !GetAtt
+      - WebsiteS3Hosting
+      - WebsiteURL
+    Description: URL for website hosted on S3
+  S3BucketSecureURL:
+    Value: !Join
+      - ''
+      - - 'https://'
+        - !GetAtt
+          - WebsiteS3Hosting
+          - DomainName
+    Description: Name of the S3 bucket to hold website content
+  ApiEndpoint:
+    Value: !Sub "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/Submit"
+    Description: API Gateway endpoint for form submissions
