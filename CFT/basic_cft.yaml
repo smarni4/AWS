@@ -2,6 +2,8 @@ AWSTemplateFormatVersion: "2010-09-09"
 
 Description: "Basic Template 1"
 
+Parameters:
+
 Resources:
 
 #  TestingInstance:
@@ -58,13 +60,13 @@ Resources:
       Code:
        S3Bucket: !Ref WebsiteS3Hosting
        S3Key: lambda_code.zip
-#      Events:
-#        SubmitForm:
-#          Type: Api
-#          Properties:
-#            RestApiId: !Ref ApiGateway
-#            Path: /submit
-#            Method: post
+      Events:
+        SubmitForm:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /submit
+            Method: post
 
   ApiGateway:
     Type: 'AWS::ApiGatewayV2::Api'
