@@ -1,6 +1,7 @@
 import json
 import boto3
 
+
 def lambda_handler(event, context):
     # Retrieve form data from the event
     name = event['Records'][0]['s3']['object']['name']
@@ -15,9 +16,17 @@ def lambda_handler(event, context):
 
     # Send the email using Amazon SES
     ses_client = boto3.client('ses', region_name='us-east-1')
+
+    # This code block is required only for email verification
+
+    # email_list = ['srimarni147@gmail.com', 'srikanthmarni147@gmail.com']
+    # for mail in email_list:
+    #     response = ses_client.verify_email_identity(EmailAddress=mail)
+    # print(response)
+
     response = ses_client.send_email(
         Destination={
-            'ToAddresses': ['srikanthmarni147@gmail.com']   # address to send the mails.
+            'ToAddresses': ['srimarni147@gmail.com']  # address to send the mails.
         },
         Message={
             'Body': {
@@ -31,7 +40,7 @@ def lambda_handler(event, context):
                 'Data': subject
             }
         },
-        Source='srikanthmarni147@gmail.com'   # verified sender email
+        Source='srikanthmarni147@gmail.com'  # verified sender email. Account holder receive the mail from this mail id.
     )
 
     # Log the response for debugging
@@ -41,3 +50,21 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps('Email sent successfully!')
     }
+
+
+event = {'Records':
+    [
+        {
+            's3': {
+                'object': {
+                    'name': 'Veera',
+                    'email': 'srikanthmarni147@gmail.com',
+                    'message': 'Testing'
+                }
+            }
+        }
+    ]
+
+}
+
+lambda_handler(event, 'context')
